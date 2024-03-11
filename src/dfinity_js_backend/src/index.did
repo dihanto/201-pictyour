@@ -1,0 +1,11 @@
+service: () -> {
+    addPicture: (record {like:nat32; pictureUrl:text; caption:text}) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}});
+    addUser: (record {username:text; name:text}) -> (variant {Ok:record {id:text; username:text; orders:vec text; name:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}});
+    createOrder: (record {userId:text; pictureId:text}) -> (variant {Ok:record {id:text; username:text; userId:text; pictureId:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}});
+    getPicture: (text) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}}) query;
+    getPictures: () -> (vec record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text}) query;
+    getUser: (text) -> (variant {Ok:record {id:text; username:text; orders:vec text; name:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}}) query;
+    getUsers: () -> (vec record {id:text; username:text; orders:vec text; name:text}) query;
+    updatePicture: (record {id:text; pictureUrl:text; caption:text}) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}});
+    updateUser: (record {id:text; name:text}) -> (variant {Ok:record {id:text; username:text; orders:vec text; name:text}; Err:variant {NotFound:text; Unauthorized:text; BadRequest:text}});
+}

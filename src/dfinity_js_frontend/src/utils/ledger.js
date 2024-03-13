@@ -1,6 +1,7 @@
 import { AccountIdentifier } from "@dfinity/nns";
 
 export async function transferICP(sellerAddress, amount, memo) {
+  debugger;
   const canister = window.canister.ledger;
   const account = AccountIdentifier.fromHex(sellerAddress);
   const result = await canister.transfer({
@@ -16,7 +17,7 @@ export async function transferICP(sellerAddress, amount, memo) {
 
 export async function balance() {
   const canister = window.canister.ledger;
-  const address = await window.canister.pictureManager.getAddressFromPrincipal(
+  const address = await window.canister.picture.getAddressFromPrincipal(
     window.auth.principal
   );
   const balance = await canister.account_balance_dfx({ account: address });

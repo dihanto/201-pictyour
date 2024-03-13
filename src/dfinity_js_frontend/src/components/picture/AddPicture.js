@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { addPicture } from "../../utils/picture";
 import {
   Button,
   FloatingLabel,
@@ -11,19 +10,19 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 
-export default function AddPicture({ setNewPicture }) {
-  const [likeStr, setLikeStr] = useState("");
+export default function AddPicture({ save }) {
+  const [priceStr, setPriceStr] = useState("");
   const [pictureUrl, setPictureUrl] = useState("");
   const [caption, setCaption] = useState("");
 
-  const isFormFilled = likeStr && pictureUrl && caption;
+  const isFormFilled = priceStr && pictureUrl && caption;
 
   const [show, setShow] = useState(false);
 
-  const like = parseInt(likeStr, 10);
+  const price = parseInt(priceStr, 10);
 
   const picturePayload = {
-    like,
+    price,
     pictureUrl,
     caption,
   };
@@ -32,8 +31,7 @@ export default function AddPicture({ setNewPicture }) {
   const handleClose = () => setShow(false);
 
   const handleClick = () => {
-    addPicture(picturePayload);
-    setNewPicture();
+    save(picturePayload);
     handleClose();
   };
 
@@ -56,16 +54,16 @@ export default function AddPicture({ setNewPicture }) {
             style={{ backgroundColor: "#041059" }}
           >
             <FloatingLabel
-              controlId="like"
-              label="picture like"
+              controlId="price"
+              label="picture price"
               className="mb-3"
             >
               <Form.Control
                 type="number"
                 onChange={(e) => {
-                  setLikeStr(e.target.value);
+                  setPriceStr(e.target.value);
                 }}
-                placeholder="picture likes"
+                placeholder="picture price"
               />
             </FloatingLabel>
             <FloatingLabel

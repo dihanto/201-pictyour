@@ -33,11 +33,11 @@ export default function UpdatePicture({ picture, save }) {
         variant="secondary"
         className="btn btn-primary btn-md rounded-3 border border-info shadow-lg display-4 fw-bold text-body-emphasis"
       >
-        Update Picture
+        Update
       </Button>
       <Modal show={show} onHide={handleClose} centered className="text-center">
         <ModalHeader closeButton>
-          <ModalTitle>Update Picture</ModalTitle>
+          <ModalTitle>Update</ModalTitle>
         </ModalHeader>
         <Form>
           <ModalBody
@@ -82,7 +82,7 @@ export default function UpdatePicture({ picture, save }) {
                 });
               }}
             >
-              Update Picture
+              Update
             </Button>
           </ModalFooter>
         </Form>

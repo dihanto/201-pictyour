@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  addPicture,
   getPictures as getPicturesList,
   updatePicture,
 } from "../../utils/picture";
@@ -11,7 +12,6 @@ import AddPicture from "./AddPicture";
 const Pictures = () => {
   const [pictures, setPictures] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isNewPicture, setIsNewPicture] = useState(false);
 
   const getPictures = useCallback(async () => {
     try {
@@ -27,14 +27,25 @@ const Pictures = () => {
     }
   });
 
-  const handleNewPicture = () => {
-    setIsNewPicture(!isNewPicture);
+  const add = async (data) => {
+    try {
+      setLoading(true);
+      addPicture(data).then(() => {
+        getPictures();
+        toast(<NotificationSuccess text="Picture add successfully" />);
+      });
+    } catch (error) {
+      console.log({ error });
+      toast(<NotificationError text="Failed to add picture" />);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const update = async (data) => {
     try {
       setLoading(true);
-      updatePicture(data).then((response) => {
+      updatePicture(data).then(() => {
         getPictures();
         toast(<NotificationSuccess text="Picture update successfully" />);
       });
@@ -47,7 +58,7 @@ const Pictures = () => {
   };
   useEffect(() => {
     getPictures();
-  }, [isNewPicture]);
+  }, []);
 
   return (
     <div>
@@ -57,9 +68,9 @@ const Pictures = () => {
             <h1 className="text-2xl text-blue-300">Pictures</h1>
             <h2 className="right-0">Users</h2>
             <div className="m-3">
-              <AddPicture setNewPicture={handleNewPicture} />
+              <AddPicture save={add} />
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
               {pictures.map((_picture, index) => (
                 <Picture
                   key={index}

@@ -58,7 +58,7 @@ Switch to the minter identity:
 `dfx identity use minter`
 
 Transfer ICP:
-`dfx ledger transfer <ADDRESS>  --memo 0 --icp 100 --fee 0`
+  npm run mint-tokens 5000_0000_0000 aa0688cd50df7e6d865a897fc7f0fe82a0ffa5b52e7684fea37a21e84745550d
 where:
 - `--memo` is some correlation id that can be set to identify some particular transactions (we use that in the marketplace canister).
 - `--icp` is the transfer amount

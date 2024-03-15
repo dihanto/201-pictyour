@@ -33,7 +33,7 @@ export async function updatePicture(picture) {
   return window.canister.picture.updatePicture(picture);
 }
 
-export async function buyPicture(picture) {
+export async function buyPicture(picture, userId) {
   const pictureCanister = window.canister.picture;
   const orderResponse = await pictureCanister.createOrder(picture.id);
   const sellerPrincipal = Principal.from(orderResponse.Ok.payer);
@@ -51,9 +51,15 @@ export async function buyPicture(picture) {
     orderResponse,
     sellerPrincipal,
     sellerAddress,
-    block
+    block,
+    userId
   );
-  await pictureCanister.completeOrder(picture.id, block, orderResponse.Ok.memo);
+  await pictureCanister.completeOrder(
+    picture.id,
+    block,
+    orderResponse.Ok.memo,
+    userId
+  );
 }
 
 export async function addUser(user) {

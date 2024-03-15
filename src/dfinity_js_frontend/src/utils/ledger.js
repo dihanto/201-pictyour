@@ -1,7 +1,6 @@
 import { AccountIdentifier } from "@dfinity/nns";
 
 export async function transferICP(sellerAddress, amount, memo) {
-  debugger;
   const canister = window.canister.ledger;
   const account = AccountIdentifier.fromHex(sellerAddress);
   const result = await canister.transfer({

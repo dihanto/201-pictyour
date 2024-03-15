@@ -39,6 +39,7 @@ const Picture = Record({
   pictureUrl: text,
   seller: Principal,
   price: nat64,
+  owned: text,
 });
 
 const PicturePayload = Record({
@@ -109,6 +110,7 @@ export default Canister({
     const picture = {
       id: uuidv4() as text,
       like: 0,
+      owned: "No one",
       seller: ic.caller(),
       ...payload,
     };
@@ -137,12 +139,22 @@ export default Canister({
         return Err({ NotFound: `picture with id=${payload.id} not found` });
       }
       const picture = pictureRes.Some;
-      const updatePicture = {
+
+      const updatedPicture = {
         ...picture,
         ...payload,
       };
-      pictureStorage.insert(picture.id, updatePicture);
-      return Ok(updatePicture);
+
+      if (payload.pictureUrl === "") {
+        updatedPicture.pictureUrl = picture.pictureUrl;
+      }
+
+      if (payload.caption === "") {
+        updatedPicture.caption = picture.caption;
+      }
+
+      pictureStorage.insert(picture.id, updatedPicture);
+      return Ok(updatedPicture);
     }
   ),
 
@@ -190,15 +202,15 @@ export default Canister({
   }),
 
   completeOrder: update(
-    [text, nat64, nat64],
+    [text, nat64, nat64, text],
     Result(Order, Message),
-    async (pictureId, block, memo) => {
+    async (pictureId, block, memo, userId) => {
       const pictureRes = pictureStorage.get(pictureId);
       if ("None" in pictureRes) {
         throw Error(`picture with id=${pictureId} not found`);
       }
-
       const picture = pictureRes.Some;
+
       if ("None" in orderFee) {
         return Err({
           NotFound: "order fee not set",
@@ -238,6 +250,12 @@ export default Canister({
         status: { Completed: "COMPLETED" },
         paid_at_block: Some(block),
       };
+
+      const updatedPicture = {
+        ...picture,
+        owned: userId,
+      };
+      pictureStorage.insert(pictureId, updatedPicture);
 
       persistedOrders.insert(ic.caller(), updatedOrder);
       return Ok(updatedOrder);

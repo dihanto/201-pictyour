@@ -4,7 +4,7 @@ import { Card, CardBody, CardFooter, CardText } from "react-bootstrap";
 import UpdatePicture from "./UpdatePicture";
 import BuyPicture from "./BuyPicture";
 
-const Picture = ({ picture, update }) => {
+const Picture = ({ picture, update, userId }) => {
   const { id, caption, like, pictureUrl, seller, price } = picture;
   console.log(typeof price);
   return (
@@ -19,7 +19,7 @@ const Picture = ({ picture, update }) => {
       </CardBody>
       <CardFooter>
         <UpdatePicture picture={picture} save={update} />
-        <BuyPicture picture={picture} />
+        <BuyPicture picture={picture} userId={userId} />
       </CardFooter>
     </Card>
   );

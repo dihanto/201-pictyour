@@ -1,13 +1,13 @@
 service: (record {orderFee:nat64}) -> {
-    addPicture: (record {pictureUrl:text; caption:text; price:nat64}) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
+    addPicture: (record {pictureUrl:text; caption:text; price:nat64}) -> (variant {Ok:record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     addUser: (text) -> (variant {Ok:record {id:text; name:text}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
-    completeOrder: (text, nat64, nat64) -> (variant {Ok:record {status:variant {OrderPending:text; Completed:text}; memo:nat64; payer:principal; amount:nat64; pictureId:text; paid_at_block:opt nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
+    completeOrder: (text, nat64, nat64, text) -> (variant {Ok:record {status:variant {OrderPending:text; Completed:text}; memo:nat64; payer:principal; amount:nat64; pictureId:text; paid_at_block:opt nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     createOrder: (text) -> (variant {Ok:record {status:variant {OrderPending:text; Completed:text}; memo:nat64; payer:principal; amount:nat64; pictureId:text; paid_at_block:opt nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     getAddressFromPrincipal: (principal) -> (text) query;
-    getPicture: (text) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
-    getPictures: () -> (vec record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}) query;
+    getPicture: (text) -> (variant {Ok:record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
+    getPictures: () -> (vec record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}) query;
     getUser: (text) -> (variant {Ok:record {id:text; name:text}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
     getUsers: () -> (vec record {id:text; name:text}) query;
-    updatePicture: (record {id:text; pictureUrl:text; caption:text}) -> (variant {Ok:record {id:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
+    updatePicture: (record {id:text; pictureUrl:text; caption:text}) -> (variant {Ok:record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     verifyPayment: (principal, nat64, nat64, nat64) -> (bool) query;
 }

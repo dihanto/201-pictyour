@@ -9,7 +9,7 @@ import { NotificationError, NotificationSuccess } from "../utils/Notifications";
 import Loader from "../utils/Loader";
 import Picture from "./Picture";
 import AddPicture from "./AddPicture";
-const Pictures = () => {
+const Pictures = ({ userId }) => {
   const [pictures, setPictures] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -76,6 +76,7 @@ const Pictures = () => {
                   key={index}
                   picture={{ ..._picture }}
                   update={update}
+                  userId={userId}
                 />
               ))}
             </div>

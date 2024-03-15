@@ -12,7 +12,7 @@ import AddUser from "./AddUser";
 import { toast } from "react-toastify";
 import { NotificationError, NotificationSuccess } from "../utils/Notifications";
 
-export default function Users() {
+export default function Users({ onHandleUserId }) {
   const [users, setUsers] = useState([]);
 
   const getUsers = async () => {
@@ -53,7 +53,11 @@ export default function Users() {
           <DropdownItem>
             <Stack direction="horizontal" gap={2}>
               {users.map((_user, index) => (
-                <User key={index} user={_user} />
+                <User
+                  key={index}
+                  user={_user}
+                  onHandleUserId={onHandleUserId}
+                />
               ))}
             </Stack>
           </DropdownItem>

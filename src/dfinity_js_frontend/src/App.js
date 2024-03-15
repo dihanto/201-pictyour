@@ -15,17 +15,24 @@ const App = function AppWrapper() {
   const principal = window.auth.principalText;
 
   const [balance, setBalance] = useState("0");
+  const [userId, setUserId] = useState("");
+
+  const handleUserId = (data) => {
+    setUserId(data);
+  };
 
   const getBalance = useCallback(async () => {
     if (isAuthenticated) {
       setBalance(await principalBalance());
     }
-  });
+  }, [isAuthenticated]);
 
   useEffect(() => {
     getBalance();
   }, [getBalance]);
+
   console.log(isAuthenticated);
+  console.log(userId);
 
   return (
     <>
@@ -34,7 +41,7 @@ const App = function AppWrapper() {
         <Container fluid="md">
           <Nav className="justify-content-end pt-3 pb-5">
             <Nav.Item>
-              <Users />
+              <Users onHandleUserId={handleUserId} />
               <Wallet
                 principal={principal}
                 balance={balance}
@@ -45,7 +52,7 @@ const App = function AppWrapper() {
             </Nav.Item>
           </Nav>
           <main>
-            <Pictures />
+            <Pictures userId={userId} />
           </main>
         </Container>
       ) : (

@@ -59,6 +59,17 @@ const User = Record({
   name: text,
 });
 
+const Like = Record({
+  id: text,
+  pictureId: text,
+  userId: text,
+});
+
+const LikePayload = Record({
+  pictureId: text,
+  userId: text,
+});
+
 const InitPayload = Record({
   orderFee: nat64,
 });
@@ -92,6 +103,7 @@ let orderFee: Opt<nat64> = None;
 const icpCanister = Ledger(Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
 
 const pictureStorage = StableBTreeMap(0, text, Picture);
+const likeStorage = StableBTreeMap(4, text, Like);
 const persistedOrders = StableBTreeMap(1, Principal, Order);
 const pendingOrders = StableBTreeMap(2, nat64, Order);
 
@@ -175,6 +187,32 @@ export default Canister({
 
   getUsers: query([], Vec(User), () => {
     return userStorage.values();
+  }),
+
+  likePicture: update([LikePayload], Result(Like, Message), (payload) => {
+    const like = {
+      id: uuidv4(),
+      pictureId: payload.pictureId,
+      userId: payload.userId,
+    };
+    const likes = likeStorage.values();
+    for (const existingLike of likes) {
+      if (
+        existingLike.userId === payload.userId &&
+        existingLike.pictureId === payload.pictureId
+      ) {
+        return Err({ Exists: "User has already liked this picture." });
+      }
+    }
+    const pictureRes = pictureStorage.get(payload.pictureId);
+    const picture = pictureRes.Some;
+    const updatedPicture = {
+      ...picture,
+      like: picture.like + 1,
+    };
+    pictureStorage.insert(payload.pictureId, updatedPicture);
+    likeStorage.insert(like.id, like);
+    return Ok(like);
   }),
 
   createOrder: update([text], Result(Order, Message), (pictureId) => {

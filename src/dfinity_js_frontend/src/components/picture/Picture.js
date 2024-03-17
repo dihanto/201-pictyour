@@ -5,7 +5,7 @@ import UpdatePicture from "./UpdatePicture";
 import BuyPicture from "./BuyPicture";
 
 const Picture = ({ picture, update, userId }) => {
-  const { id, caption, like, pictureUrl, seller, price } = picture;
+  const { id, caption, like, pictureUrl, seller, price, owned } = picture;
   console.log(typeof price);
   return (
     <Card style={{ width: "22rem", padding: "3px" }}>
@@ -16,6 +16,7 @@ const Picture = ({ picture, update, userId }) => {
           like : {like} || price : {price.toString()}{" "}
         </CardText>
         <CardText>{caption}</CardText>
+        <CardText>owned by : {owned}</CardText>
       </CardBody>
       <CardFooter>
         <UpdatePicture picture={picture} save={update} />

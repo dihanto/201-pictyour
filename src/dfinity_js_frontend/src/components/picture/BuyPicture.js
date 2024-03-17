@@ -1,7 +1,8 @@
 import React from "react";
 import { buyPicture } from "../../utils/picture";
-import { Button } from "react-bootstrap";
+import { Button, ToastContainer } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { NotificationError, NotificationSuccess } from "../utils/Notifications";
 
 export default function BuyPicture({ picture, userId }) {
   const handleClick = () => {
@@ -12,6 +13,9 @@ export default function BuyPicture({ picture, userId }) {
       return;
     }
     buyPicture(picture, userId);
+    toast(
+      <NotificationSuccess text="success buy picture"></NotificationSuccess>
+    );
   };
 
   return (

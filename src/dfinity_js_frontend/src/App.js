@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Container, Nav } from "react-bootstrap";
 import "./App.css";
 import Wallet from "./components/Wallet";
-import coverImg from "./assets/img/sandwich.jpg";
+import coverImg from "./assets/img/pictyour.png";
 import { login, logout as destroy } from "./utils/auth";
 import Cover from "./components/utils/Cover";
 import { Notification } from "./components/utils/Notifications";

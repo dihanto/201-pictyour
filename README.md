@@ -1,70 +1,26 @@
-# ICP Azle 201 Boilerplate
-
-ICP Azle 201 Boilerplate is a comprehensive project setup designed to streamline your development process. It provides a solid foundation with pre-configured components to help you get started quickly.
+# PICTYOUR 201
 
 ## Features
 
-- **React.js Setup:** The boilerplate comes with a well-structured React.js setup, making it easy to manage your frontend infrastructure.
-- **ICP Canister:** ICP Canister integration is included, offering a powerful way to manage data and interactions on the Internet Computer.
-
-**[Read the Getting Started Guide](link-to-your-tutorial)**
+- add, get, update pictures
+- add, get users
+- buy/order the picture
+- like picture (SOON)
 
 ## Things to be explained in the course:
+
 1. What is Ledger? More details here: https://internetcomputer.org/docs/current/developer-docs/integrations/ledger/
 2. What is Internet Identity? More details here: https://internetcomputer.org/internet-identity
 3. What is Principal, Identity, Address? https://internetcomputer.org/internet-identity | https://yumimarketplace.medium.com/whats-the-difference-between-principal-id-and-account-id-3c908afdc1f9
 4. Canister-to-canister communication and how multi-canister development is done? https://medium.com/icp-league/explore-backend-multi-canister-development-on-ic-680064b06320
 
-## Getting started
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/dacadeorg/icp-azle-201)
-
-If you rather want to use GitHub Codespaces, click this button instead:
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dacadeorg/icp-azle-201?quickstart=1)
-
-**NOTE**: After deploying your canisters in GitHub Codespaces, run `./canister_urls.py` and click the links that are shown there.
-
-[![Open locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/dacadeorg/icp-azle-201)
-
 ## How to deploy canisters implemented in the course
 
+`dfx start --clean --background`
+
 ### Ledger canister
+
 `./deploy-local-ledger.sh` - deploys a local Ledger canister. IC works differently when run locally so there is no default network token available and you have to deploy it yourself. Remember that it's not a token like ERC-20 in Ethereum, it's a native token for ICP, just deployed separately.
-This canister is described in the `dfx.json`:
-```
-	"ledger_canister": {
-  	"type": "custom",
-  	"candid": "https://raw.githubusercontent.com/dfinity/ic/928caf66c35627efe407006230beee60ad38f090/rs/rosetta-api/icp_ledger/ledger.did",
-  	"wasm": "https://download.dfinity.systems/ic/928caf66c35627efe407006230beee60ad38f090/canisters/ledger-canister.wasm.gz",
-  	"remote": {
-    	"id": {
-      	"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-    	}
-  	}
-	}
-```
-`remote.id.ic` - that is the principal of the Ledger canister and it will be available by this principal when you work with the ledger.
-
-Also, in the scope of this script, a minter identity is created which can be used for minting tokens
-for the testing purposes.
-Additionally, the default identity is pre-populated with 1000_000_000_000 e8s which is equal to 10_000 * 10**8 ICP.
-The decimals value for ICP is 10**8.
-
-List identities:
-`dfx identity list`
-
-Switch to the minter identity:
-`dfx identity use minter`
-
-Transfer ICP:
-  npm run mint-tokens 5000_0000_0000 aa0688cd50df7e6d865a897fc7f0fe82a0ffa5b52e7684fea37a21e84745550d
-where:
-- `--memo` is some correlation id that can be set to identify some particular transactions (we use that in the marketplace canister).
-- `--icp` is the transfer amount
-- `--fee` is the transaction fee. In this case it's 0 because we make this transfer as the minter idenity thus this transaction is of type MINT, not TRANSFER.
-- `<ADDRESS>` is the address of the recipient. To get the address from the principal, you can use the helper function from the marketplace canister - `getAddressFromPrincipal(principal: Principal)`, it can be called via the Candid UI.
-
 
 ### Internet identity canister
 
@@ -73,11 +29,31 @@ or create a new one.
 
 ### Marketplace canister
 
-`dfx deploy dfinity_js_backend` - deploys the marketplace canister where the business logic is implemented.
-Basically, it implements functions like add, view, update, delete, and buy products + a set of helper functions.
+`dfx deploy dfinity_js_backend` - deploys the mpicture canister where the business logic is implemented.
+Basically, it implements functions like add, view, update, delete, and buy picture + a set of helper functions.
 
 Do not forget to run `dfx generate dfinity_js_backend` anytime you add/remove functions in the canister or when you change the signatures.
 Otherwise, these changes won't be reflected in IDL's and won't work when called using the JS agent.
 
 ### Marketplace frontend canister
+
 `dfx deploy dfinity_js_frontend` - deployes the frontend app for the `dfinity_js_backend` canister on IC.
+
+### ICP Transfer
+
+Transfer ICP:
+`npm run mint-tokens amount address`
+where:
+
+- `amount` is the total icp want to be send to the address, example : 5000_0000_0000 is equal to 5000 ICP.
+- `address` is the address of the recipient. To get the address from the principal, you can use the helper function from the marketplace canister - `getAddressFromPrincipal(principal: Principal)`, it can be called via the Candid UI.
+
+### ADD Picture Example
+
+Due to the "canister call limit" error occurring when saving images in stableBTreemap, images are added using the following external website as an example:
+
+https://source.unsplash.com/500x500?butterfly
+
+### Buy Image
+
+To purchase an image, you need to prepare ICP balance using the transfer method mentioned above, and then select which user will buy the image.

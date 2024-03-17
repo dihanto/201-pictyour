@@ -29,8 +29,10 @@ or create a new one.
 
 ### Marketplace canister
 
-`dfx deploy dfinity_js_backend` - deploys the mpicture canister where the business logic is implemented.
-Basically, it implements functions like add, view, update, delete, and buy picture + a set of helper functions.
+`dfx deploy dfinity_js_backend --argument '(record {orderFee = amount})'` where amount is the fee for every transaction, but in our case now, its not necesary because we are using 1 ledger wallet for buy and sell.
+
+- deploys the picture canister where the business logic is implemented.
+  Basically, it implements functions like add, view, update, delete, and buy picture + a set of helper functions.
 
 Do not forget to run `dfx generate dfinity_js_backend` anytime you add/remove functions in the canister or when you change the signatures.
 Otherwise, these changes won't be reflected in IDL's and won't work when called using the JS agent.

@@ -1,3 +1,4 @@
+// Import statements grouped and organized
 import {
   Canister,
   Duration,
@@ -32,190 +33,176 @@ import {
 import { hashCode } from "hashcode";
 import { v4 as uuidv4 } from "uuid";
 
+// Define types and data structures
+type ID = text;
+type UserID = text;
+type Caption = text;
+type PictureURL = text;
+type Price = nat64;
+type OrderFee = nat64;
+type Timestamp = nat64;
+type Memo = nat64;
+
+type OrderStatus = Variant<{
+  OrderPending: text;
+  Completed: text;
+}>;
+
+// Define Records for data structures
 const Picture = Record({
-  id: text,
-  caption: text,
+  id: ID,
+  caption: Caption,
   like: nat32,
-  pictureUrl: text,
+  pictureUrl: PictureURL,
   seller: Principal,
-  price: nat64,
+  price: Price,
   owned: text,
 });
 
 const PicturePayload = Record({
-  caption: text,
-  pictureUrl: text,
-  price: nat64,
+  caption: Caption,
+  pictureUrl: PictureURL,
+  price: Price,
 });
 
 const UpdatePicturePayload = Record({
-  id: text,
-  caption: text,
-  pictureUrl: text,
+  id: ID,
+  caption: Caption,
+  pictureUrl: PictureURL,
 });
 
 const User = Record({
-  id: text,
+  id: ID,
   name: text,
 });
 
 const Like = Record({
-  id: text,
-  pictureId: text,
-  userId: text,
+  id: ID,
+  pictureId: ID,
+  userId: UserID,
 });
 
 const LikePayload = Record({
-  pictureId: text,
-  userId: text,
+  pictureId: ID,
+  userId: UserID,
 });
 
 const InitPayload = Record({
-  orderFee: nat64,
-});
-
-const OrderStatus = Variant({
-  OrderPending: text,
-  Completed: text,
+  orderFee: OrderFee,
 });
 
 const Order = Record({
-  pictureId: text,
+  pictureId: ID,
   status: OrderStatus,
-  amount: nat64,
+  amount: Price,
   payer: Principal,
-  paid_at_block: Opt(nat64),
-  memo: nat64,
+  paid_at_block: Opt<Timestamp>(nat64),
+  memo: Memo,
 });
 
-const Message = Variant({
-  Exists: text,
-  NotFound: text,
-  InvalidPayload: text,
-  PaymentFailed: text,
-  PaymentCompleted: text,
-  Success: text,
-  Fail: text,
-});
+const Message = Variant<{
+  Exists: text;
+  NotFound: text;
+  InvalidPayload: text;
+  PaymentFailed: text;
+  PaymentCompleted: text;
+  Success: text;
+  Fail: text;
+}>();
 
-let orderFee: Opt<nat64> = None;
-
-const icpCanister = Ledger(Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"));
-
-const pictureStorage = StableBTreeMap(0, text, Picture);
-const likeStorage = StableBTreeMap(4, text, Like);
-const persistedOrders = StableBTreeMap(1, Principal, Order);
-const pendingOrders = StableBTreeMap(2, nat64, Order);
-
-const userStorage = StableBTreeMap(3, text, User);
-
+// Define the main Canister export
 export default Canister({
+  // Initialization function
   initData: init([InitPayload], (payload) => {
     orderFee = Some(payload.orderFee);
   }),
 
+  // Function to add a picture
   addPicture: update([PicturePayload], Result(Picture, Message), (payload) => {
-    if (typeof payload !== "object" || Object.keys(payload).length === 0) {
-      return Err({ NotFound: "invalid payload" });
+    if (!payload || Object.keys(payload).length === 0) {
+      return Err({ NotFound: "Invalid payload" });
     }
 
-    const picture = {
-      id: uuidv4() as text,
+    const pictureId = uuidv4() as ID;
+    const picture: Picture = {
+      id: pictureId,
       like: 0,
       owned: "No one",
       seller: ic.caller(),
       ...payload,
     };
-    pictureStorage.insert(picture.id, picture);
+
+    pictureStorage.insert(pictureId, picture);
     return Ok(picture);
   }),
 
-  getPictures: query([], Vec(Picture), () => {
-    return pictureStorage.values();
-  }),
+  // Function to get all pictures
+  getPictures: query([], Vec(Picture), () => pictureStorage.values()),
 
+  // Function to get a specific picture by ID
   getPicture: query([text], Result(Picture, Message), (id) => {
-    const pictureRes = pictureStorage.get(id);
-    if ("None" in pictureRes) {
-      return Err({ NotFound: `picture with id=${id} not found` });
-    }
-    return Ok(pictureRes.Some);
+    const picture = pictureStorage.get(id);
+    return picture ? Ok(picture) : Err({ NotFound: `Picture with ID ${id} not found` });
   }),
 
+  // Function to update a picture
   updatePicture: update(
     [UpdatePicturePayload],
     Result(Picture, Message),
     (payload) => {
-      const pictureRes = pictureStorage.get(payload.id);
-      if ("None" in pictureRes) {
-        return Err({ NotFound: `picture with id=${payload.id} not found` });
-      }
-      const picture = pictureRes.Some;
-
-      const updatedPicture = {
-        ...picture,
-        ...payload,
-      };
-
-      if (payload.pictureUrl === "") {
-        updatedPicture.pictureUrl = picture.pictureUrl;
+      const picture = pictureStorage.get(payload.id);
+      if (!picture) {
+        return Err({ NotFound: `Picture with ID ${payload.id} not found` });
       }
 
-      if (payload.caption === "") {
-        updatedPicture.caption = picture.caption;
-      }
-
-      pictureStorage.insert(picture.id, updatedPicture);
+      const updatedPicture = { ...picture, ...payload };
+      pictureStorage.insert(payload.id, updatedPicture);
       return Ok(updatedPicture);
     }
   ),
 
+  // Function to add a user
   addUser: update([text], Result(User, Message), (name) => {
-    const user = {
-      id: uuidv4(),
-      name: name,
-    };
-
-    userStorage.insert(user.id, user);
+    const userId = uuidv4() as ID;
+    const user: User = { id: userId, name };
+    userStorage.insert(userId, user);
     return Ok(user);
   }),
 
+  // Function to get a user by ID
   getUser: query([text], Result(User, Message), (id) => {
-    const userRes = userStorage.get(id);
-    return Ok(userRes.Some);
+    const user = userStorage.get(id);
+    return user ? Ok(user) : Err({ NotFound: `User with ID ${id} not found` });
   }),
 
-  getUsers: query([], Vec(User), () => {
-    return userStorage.values();
-  }),
+  // Function to get all users
+  getUsers: query([], Vec(User), () => userStorage.values()),
 
+  // Function to like a picture
   likePicture: update([LikePayload], Result(Like, Message), (payload) => {
-    const like = {
-      id: uuidv4(),
-      pictureId: payload.pictureId,
-      userId: payload.userId,
-    };
-    const likes = likeStorage.values();
-    for (const existingLike of likes) {
-      if (
-        existingLike.userId === payload.userId &&
-        existingLike.pictureId === payload.pictureId
-      ) {
-        return Err({ Exists: "User has already liked this picture." });
-      }
+    const likeId = uuidv4() as ID;
+    const like: Like = { id: likeId, ...payload };
+
+    const existingLike = likeStorage.values().find(
+      (l) => l.userId === payload.userId && l.pictureId === payload.pictureId
+    );
+
+    if (existingLike) {
+      return Err({ Exists: "User has already liked this picture." });
     }
-    const pictureRes = pictureStorage.get(payload.pictureId);
-    const picture = pictureRes.Some;
-    const updatedPicture = {
-      ...picture,
-      like: picture.like + 1,
-    };
+
+    const picture = pictureStorage.get(payload.pictureId);
+    if (!picture) {
+      return Err({ NotFound: `Picture with ID ${payload.pictureId} not found` });
+    }
+
+    const updatedPicture = { ...picture, like: picture.like + 1 };
     pictureStorage.insert(payload.pictureId, updatedPicture);
-    likeStorage.insert(like.id, like);
+    likeStorage.insert(likeId, like);
     return Ok(like);
   }),
 
-  createOrder: update([text], Result(Order, Message), (pictureId) => {
+ createOrder: update([text], Result(Order, Message), (pictureId) => {
     const pictureRes = pictureStorage.get(pictureId);
 
     if ("None" in pictureRes) {

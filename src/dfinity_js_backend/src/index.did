@@ -6,6 +6,7 @@ service: (record {orderFee:nat64}) -> {
     getAddressFromPrincipal: (principal) -> (text) query;
     getPicture: (text) -> (variant {Ok:record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
     getPictures: () -> (vec record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}) query;
+    getPrincipalAddress: () -> (text) query;
     getUser: (text) -> (variant {Ok:record {id:text; name:text}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
     getUsers: () -> (vec record {id:text; name:text}) query;
     likePicture: (record {userId:text; pictureId:text}) -> (variant {Ok:record {id:text; userId:text; pictureId:text}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});

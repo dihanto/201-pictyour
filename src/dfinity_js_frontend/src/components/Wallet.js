@@ -1,7 +1,14 @@
 import React from "react";
-import { Dropdown, Stack } from "react-bootstrap";
+import { Dropdown, DropdownItemText, Stack } from "react-bootstrap";
 
-const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
+const Wallet = ({
+  principal,
+  balance,
+  symbol,
+  isAuthenticated,
+  destroy,
+  address,
+}) => {
   if (isAuthenticated) {
     return (
       <>
@@ -22,9 +29,10 @@ const Wallet = ({ principal, balance, symbol, isAuthenticated, destroy }) => {
                 <span className="font-monospace">{principal}</span>
               </Stack>
             </Dropdown.Item>
-
+            <DropdownItemText>
+              <span>{address}</span>
+            </DropdownItemText>
             <Dropdown.Divider />
-
             <Dropdown.Item
               as="button"
               className="d-flex align-items-center"

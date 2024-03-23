@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal";
-import { transferICP } from "./ledger";
+import { transferICP, balance as principalBalance } from "./ledger";
 
 export async function addPicture(picture) {
   return window.canister.picture.addPicture(picture);
@@ -46,6 +46,7 @@ export async function buyPicture(picture, userId) {
     orderResponse.Ok.amount,
     orderResponse.Ok.memo
   );
+
   console.log(
     pictureCanister,
     orderResponse,
@@ -54,12 +55,20 @@ export async function buyPicture(picture, userId) {
     block,
     userId
   );
+
+  const balance = await principalBalance();
+  if (balance <= 0) {
+    return "insufficient balance";
+  }
+
   await pictureCanister.completeOrder(
     picture.id,
     block,
     orderResponse.Ok.memo,
     userId
   );
+
+  return true;
 }
 
 export async function addUser(user) {
@@ -107,6 +116,18 @@ export async function likePicture(payload) {
 export async function unlikePicture(likeId) {
   try {
     return await window.canister.picture.unlikePicture(likeId);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}
+
+export async function getPrincipalAddress() {
+  try {
+    return await window.canister.picture.getPrincipalAddress();
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

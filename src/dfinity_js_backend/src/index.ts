@@ -1,7 +1,6 @@
 // Imports
 import {
   Canister,
-  Duration,
   Err,
   None,
   Ok,
@@ -407,6 +406,11 @@ export default Canister({
   // Function for getting an address from principal
   getAddressFromPrincipal: query([Principal], text, (principal) => {
     // Get the hexadecimal address from the principal
+    return hexAddressFromPrincipal(principal, 0);
+  }),
+
+  getPrincipalAddress: query([], text, () => {
+    const principal = ic.caller();
     return hexAddressFromPrincipal(principal, 0);
   }),
 });

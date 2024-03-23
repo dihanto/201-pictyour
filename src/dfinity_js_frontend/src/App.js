@@ -9,6 +9,7 @@ import { Notification } from "./components/utils/Notifications";
 import Pictures from "./components/picture/Pictures";
 import Users from "./components/user/Users";
 import { balance as principalBalance } from "./utils/ledger";
+import { getPrincipalAddress } from "./utils/picture";
 
 const App = function AppWrapper() {
   const isAuthenticated = window.auth.isAuthenticated;
@@ -16,6 +17,7 @@ const App = function AppWrapper() {
 
   const [balance, setBalance] = useState("0");
   const [userId, setUserId] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleUserId = (data) => {
     setUserId(data);
@@ -24,6 +26,7 @@ const App = function AppWrapper() {
   const getBalance = useCallback(async () => {
     if (isAuthenticated) {
       setBalance(await principalBalance());
+      setAddress(await getPrincipalAddress());
     }
   }, [isAuthenticated]);
 
@@ -48,6 +51,7 @@ const App = function AppWrapper() {
                 symbol={"ICP"}
                 isAuthenticated={isAuthenticated}
                 destroy={destroy}
+                address={address}
               />
             </Nav.Item>
           </Nav>
@@ -56,7 +60,7 @@ const App = function AppWrapper() {
           </main>
         </Container>
       ) : (
-        <Cover name="Street Food" login={login} coverImg={coverImg} />
+        <Cover name="PictYour" login={login} coverImg={coverImg} />
       )}
     </>
   );

@@ -48,7 +48,7 @@ Transfer ICP:
 where:
 
 - `amount` is the total icp want to be send to the address, example : 5000_0000_0000 is equal to 5000 ICP.
-- `address` is the address of the recipient. To get the address from the principal, you can use the helper function from the marketplace canister - `getAddressFromPrincipal(principal: Principal)`, it can be called via the Candid UI.
+- `address` is the address of the recipient. To get the address from the principal, you can get from the balance dropdown menu.
 
 ### ADD Picture Example
 

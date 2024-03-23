@@ -215,6 +215,24 @@ export default Canister({
     return Ok(like);
   }),
 
+  unlikePicture: update([text], Result(Like, Message), (likeId) => {
+    const likeRes = likeStorage.get(likeId);
+    const like = likeRes.Some;
+
+    const pictureRes = pictureStorage.get(like.pictureId);
+    const picture = pictureRes.Some;
+
+    const updatedPicture = {
+      ...picture,
+      like: picture.like - 1,
+    };
+
+    pictureStorage.insert(picture.id, updatedPicture);
+    likeStorage.remove(likeId);
+
+    return Ok(like);
+  }),
+
   createOrder: update([text], Result(Order, Message), (pictureId) => {
     const pictureRes = pictureStorage.get(pictureId);
 

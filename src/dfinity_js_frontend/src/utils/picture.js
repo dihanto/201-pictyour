@@ -91,3 +91,27 @@ export async function getUser(id) {
     return [];
   }
 }
+
+export async function likePicture(payload) {
+  try {
+    return await window.canister.picture.likePicture(payload);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}
+
+export async function unlikePicture(likeId) {
+  try {
+    return await window.canister.picture.unlikePicture(likeId);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}

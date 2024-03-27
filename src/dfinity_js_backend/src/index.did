@@ -4,6 +4,7 @@ service: (record {orderFee:nat64}) -> {
     completeOrder: (text, nat64, nat64, text) -> (variant {Ok:record {status:variant {OrderPending:text; Completed:text}; memo:nat64; payer:principal; amount:nat64; pictureId:text; paid_at_block:opt nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     createOrder: (text) -> (variant {Ok:record {status:variant {OrderPending:text; Completed:text}; memo:nat64; payer:principal; amount:nat64; pictureId:text; paid_at_block:opt nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}});
     getAddressFromPrincipal: (principal) -> (text) query;
+    getLikes: () -> (vec record {id:text; userId:text; pictureId:text}) query;
     getPicture: (text) -> (variant {Ok:record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}; Err:variant {Fail:text; PaymentFailed:text; InvalidPayload:text; NotFound:text; Success:text; PaymentCompleted:text; Exists:text}}) query;
     getPictures: () -> (vec record {id:text; owned:text; like:nat32; pictureUrl:text; seller:principal; caption:text; price:nat64}) query;
     getPrincipalAddress: () -> (text) query;

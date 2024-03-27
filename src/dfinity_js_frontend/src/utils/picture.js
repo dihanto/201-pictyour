@@ -136,3 +136,15 @@ export async function getPrincipalAddress() {
     return [];
   }
 }
+
+export async function getLikes() {
+  try {
+    return await window.canister.picture.getLikes();
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}

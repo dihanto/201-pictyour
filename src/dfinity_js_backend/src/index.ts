@@ -289,10 +289,12 @@ export default Canister({
     // Return success with removed like
     return Ok(like);
   }),
+  getLikes: query([], Vec(Like), () => {
+    return likeStorage.values();
+  }),
 
   // Function for creating an order
   createOrder: update([text], Result(Order, Message), (pictureId) => {
-    debugger;
     // Retrieve the picture associated with the given ID
     const pictureRes = pictureStorage.get(pictureId);
 
@@ -326,7 +328,6 @@ export default Canister({
     [text, nat64, nat64, text],
     Result(Order, Message),
     async (pictureId, block, memo, userId) => {
-      debugger;
       // Retrieve the picture associated with the given ID
       const pictureRes = pictureStorage.get(pictureId);
       if ("None" in pictureRes) {
